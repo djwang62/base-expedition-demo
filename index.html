@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#13251d" />
+    <title>基地探索｜HTML5 Prototype</title>
+    <style>
+      /* Kept inline so the loading screen is styled before the JS bundle and game CSS arrive. */
+      body:not(.is-game-ready) .game-shell { visibility: hidden; }
+      .loading-screen { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 24px; overflow: hidden; background: radial-gradient(circle at 50% 38%, #294c35 0, #172b20 38%, #0b1610 100%); color: #fff2c9; font-family: "Noto Sans TC", system-ui, sans-serif; transition: opacity .38s ease, visibility .38s step-end; }
+      .loading-screen::before, .loading-screen::after { position: absolute; width: min(76vmax, 860px); aspect-ratio: 1; border: 1px solid rgba(226, 189, 116, .18); border-radius: 50%; content: ""; }
+      .loading-screen::before { transform: translate(-30%, 18%); }
+      .loading-screen::after { transform: translate(35%, -26%); }
+      .loading-card { position: relative; width: min(390px, 100%); padding: 32px 30px 28px; border: 1px solid rgba(226, 189, 116, .72); border-radius: 18px; background: rgba(13, 31, 20, .84); box-shadow: 0 22px 70px rgba(0, 0, 0, .42); text-align: center; }
+      .loading-card__eyebrow { margin: 0 0 9px; color: #e9bd54; font-size: 12px; font-weight: 700; letter-spacing: .18em; }
+      .loading-card h1 { margin: 0; font-size: clamp(25px, 7vw, 34px); letter-spacing: .08em; }
+      .loading-card p { margin: 12px 0 22px; color: #c9d4c8; font-size: 14px; }
+      .loading-progress { height: 10px; overflow: hidden; border: 1px solid #9d7b48; border-radius: 999px; background: #0b1710; }
+      .loading-progress__fill { width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #b75a3e, #e9bd54 72%, #fff0bf); box-shadow: 0 0 14px rgba(233, 189, 84, .62); transition: width .18s ease-out; }
+      .loading-progress__label { display: flex; justify-content: space-between; margin: 10px 1px 0; color: #c9d4c8; font-size: 12px; }
+      .loading-screen.is-complete { opacity: 0; visibility: hidden; pointer-events: none; }
+    </style>
+    <script type="module" crossorigin src="/base-expedition-demo/assets/index-Drw-YntO.js"></script>
+    <link rel="stylesheet" crossorigin href="/base-expedition-demo/assets/index-DG1LPCiX.css">
+  </head>
+  <body>
+    <section id="loading-screen" class="loading-screen" aria-live="polite" aria-label="遊戲載入中">
+      <div class="loading-card">
+        <p class="loading-card__eyebrow">BASE EXPEDITION</p>
+        <h1>整備探索裝備</h1>
+        <p id="loading-message">正在準備基地與探索區域…</p>
+        <div class="loading-progress" role="progressbar" aria-label="載入進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="loading-progress-fill" class="loading-progress__fill"></div></div>
+        <div class="loading-progress__label"><span>載入中</span><strong id="loading-progress-value">0%</strong></div>
+      </div>
+    </section>
+    <main class="game-shell">
+      <canvas id="game-canvas" aria-label="基地探索遊戲畫面"></canvas>
+      <section class="hud" aria-label="遊戲資訊">
+        <div class="player-hud">
+          <div class="portrait" aria-label="玩家頭像"><img src="/base-expedition-demo/assets/hero-portrait-v1-C35L_cmZ.png" alt="綠色兜帽主角頭像"></div>
+          <div class="vitals">
+            <div class="health-label"><span>生命</span><strong id="health-value">100 / 100</strong></div>
+            <div class="health-track"><div id="health-fill" class="health-fill"></div></div>
+            <div class="armor">護甲 <strong id="armor-value">0</strong></div>
+          </div>
+          <button id="weapon-button" class="icon-button weapon-button" type="button" aria-label="主武器：火把"></button>
+          <button id="bag-button" class="icon-button bag-button" type="button" aria-expanded="false" aria-controls="backpack-panel"><img src="/base-expedition-demo/assets/backpack-icon-v1-B4C6bMGX.png" alt="背包"><span class="key-hint" aria-hidden="true">Tab</span></button>
+          <div id="backpack-panel" class="backpack-panel" hidden>
+            <h2>背包 <span>0 / 5 格</span></h2>
+            <p>目前尚未蒐集素材。</p>
+          </div>
+        </div>
+        <div class="objective-card"><span id="objective-label">探索原型</span><strong id="objective-title">前往森林邊界</strong><small id="objective-detail">WASD / 方向鍵移動・Shift 衝刺</small></div>
+        <button id="game-help-button" class="help-icon game-help-icon" type="button" aria-label="查看遊玩方式" aria-haspopup="dialog">?</button>
+        <button id="dash-button" class="dash-button" type="button" aria-label="衝刺"><img class="sprint-icon" src="/base-expedition-demo/assets/sprint-boot-v1-CIL4lV2_.png" alt=""><span>Shift</span></button>
+      </section>
+      <p id="status-message" class="status-message" aria-live="polite">中央基地：火把已裝備</p>
+      <section id="facility-panel" class="facility-panel" hidden aria-live="polite"></section>
+      <section id="boss-panel" class="boss-panel" hidden><strong>外圈守衛者</strong><div><div id="boss-health-fill"></div></div><small id="boss-telegraph"></small></section>
+      <aside id="boss-pointer" class="boss-pointer" hidden aria-live="polite">外圈 Boss <span aria-hidden="true">↑</span> <small></small></aside>
+      <aside id="lost-loot-pointer" class="lost-loot-pointer" hidden>遺失背包 <span>↑</span> <small></small></aside>
+      <section id="trial-complete" class="trial-complete" hidden aria-live="assertive">
+        <div><span>感謝遊玩</span><h1>外圈守衛者已擊敗</h1><p>你已完成本次基地探索流程。</p><div class="trial-complete__actions"><button type="button" data-continue>繼續遊玩</button><button type="button" data-restart>重新開始</button></div></div>
+      </section>
+      <section id="help-dialog" class="help-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <div class="help-dialog__card">
+          <button class="help-dialog__close" type="button" data-close-help aria-label="關閉說明">×</button>
+          <p class="help-dialog__eyebrow">操作說明</p>
+          <h2 id="help-title"></h2>
+          <div id="help-content"></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
