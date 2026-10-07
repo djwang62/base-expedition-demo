@@ -21,8 +21,8 @@
       .loading-progress__label { display: flex; justify-content: space-between; margin: 10px 1px 0; color: #c9d4c8; font-size: 12px; }
       .loading-screen.is-complete { opacity: 0; visibility: hidden; pointer-events: none; }
     </style>
-    <script type="module" crossorigin src="/assets/index-_6VEw8jv.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DXRbYLbg.css">
+    <script type="module" crossorigin src="/base-expedition-demo/assets/index-D7VTwe4X.js"></script>
+    <link rel="stylesheet" crossorigin href="/base-expedition-demo/assets/index-DXRbYLbg.css">
   </head>
   <body>
     <section id="loading-screen" class="loading-screen" aria-live="polite" aria-label="遊戲載入中">
@@ -38,14 +38,14 @@
       <canvas id="game-canvas" aria-label="基地探索遊戲畫面"></canvas>
       <section class="hud" aria-label="遊戲資訊">
         <div class="player-hud">
-          <div class="portrait" aria-label="玩家頭像"><img src="/assets/hero-portrait-v1-BUMTO_Ww.webp" alt="綠色兜帽主角頭像"></div>
+          <div class="portrait" aria-label="玩家頭像"><img src="/base-expedition-demo/assets/hero-portrait-v1-BUMTO_Ww.webp" alt="綠色兜帽主角頭像"></div>
           <div class="vitals">
             <div class="health-label"><span>生命</span><strong id="health-value">100 / 100</strong></div>
             <div class="health-track"><div id="health-fill" class="health-fill"></div></div>
             <div class="armor">護甲 <strong id="armor-value">0</strong></div>
           </div>
           <button id="weapon-button" class="icon-button weapon-button" type="button" aria-label="主武器：火把"></button>
-          <button id="bag-button" class="icon-button bag-button" type="button" aria-expanded="false" aria-controls="backpack-panel"><img src="/assets/backpack-icon-v1-BYfTYRdU.webp" alt="背包"><span class="key-hint" aria-hidden="true">Tab</span></button>
+          <button id="bag-button" class="icon-button bag-button" type="button" aria-expanded="false" aria-controls="backpack-panel"><img src="/base-expedition-demo/assets/backpack-icon-v1-BYfTYRdU.webp" alt="背包"><span class="key-hint" aria-hidden="true">Tab</span></button>
           <div id="backpack-panel" class="backpack-panel" hidden>
             <h2>背包 <span>0 / 5 格</span></h2>
             <p>目前尚未蒐集素材。</p>
@@ -53,7 +53,7 @@
         </div>
         <div class="objective-card"><span id="objective-label">探索原型</span><strong id="objective-title">前往森林邊界</strong><small id="objective-detail">WASD / 方向鍵移動・Shift 衝刺</small></div>
         <button id="game-help-button" class="help-icon game-help-icon" type="button" aria-label="查看遊玩方式" aria-haspopup="dialog">?</button>
-        <button id="dash-button" class="dash-button" type="button" aria-label="衝刺"><img class="sprint-icon" src="/assets/sprint-boot-v1-C3LvhTgy.webp" alt=""><span>Shift</span></button>
+        <button id="dash-button" class="dash-button" type="button" aria-label="衝刺"><img class="sprint-icon" src="/base-expedition-demo/assets/sprint-boot-v1-C3LvhTgy.webp" alt=""><span>Shift</span></button>
       </section>
       <p id="status-message" class="status-message" aria-live="polite">中央基地：火把已裝備</p>
       <section id="facility-panel" class="facility-panel" hidden aria-live="polite"></section>
