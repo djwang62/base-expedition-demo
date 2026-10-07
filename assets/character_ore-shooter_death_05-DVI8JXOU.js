@@ -1,0 +1,1 @@
+const e="/base-expedition-demo/assets/character_ore-shooter_death_05-CbTvJzhj.webp";export{e as default};
